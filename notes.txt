@@ -1,0 +1,54 @@
+=====================================================================
+                CREATING DJANGO SETUP
+=====================================================================
+mkdir venv
+cd venv
+virtualenv -p python3 .
+source bin/activate
+cd ..
+pip3 install django
+pip freeze
+mkdir root
+cd root
+django-admin startproject _main .
+django-admin startapp <name of the app>
+
+pip freeze > requirements.txt
+=====================================================================
+
+
+=====================================================================
+                CREATING POSTGRES DB AND USER 
+=====================================================================
+sudo -u postgres psql
+create database <db name>;
+create user <new user name> with encrypted password '<password>';
+grant all privileges on database <db name> to <db user>;
+=====================================================================
+
+
+=====================================================================
+                DOCKER COMMANDS
+=====================================================================
+to build the container
+    docker-compose up --build (don't forget to stop the local service used in the docker)
+
+to check status of the service
+    sudo systemctl status <service name>(example : postgresql.service)
+
+to stop the container
+    docker-compose down 
+
+to get into logs
+    sudo docker logs -f <container name>
+
+to logging into container
+    docker exec -it <container name> bash
+
+
+
+
+# These two environment variables prevent __pycache__/ files.
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+=====================================================================

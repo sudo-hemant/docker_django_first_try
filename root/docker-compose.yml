@@ -1,0 +1,47 @@
+version: '3'
+services:
+    postgresql:
+        image: postgres:13
+        container_name: postgres
+        restart: always
+        environment:
+            POSTGRES_DB: "${POSTGRES_DB}"
+            POSTGRES_USER: "${POSTGRES_USER}"
+            POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+        env_file:
+            - ./.env
+        volumes:
+            - ./postgres_docker_data:/var/lib/postgresql/data/
+        ports:
+            - "5432:5432"
+    web:
+        build: .
+        container_name: django
+        restart: always
+        # command: python3 manage.py runserver 0.0.0.0:8000
+        command: gunicorn _main.wsgi:application --bind 0.0.0.0:8000 --workers=4
+        volumes:
+            - .:/code
+            - staticfiles:/home/app/web/staticfiles
+        # ports:
+        #     - "8000:8000"
+        # Instead of using ports in the web service, we use expose to expose the port 8000 of the container to other containers on the network.
+        expose:
+            - 8000
+        depends_on:
+            - postgresql
+    nginx:
+        image: nginx:mainline-alpine
+        container_name: nginx
+        restart: always
+        ports:
+            - 1337:80
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+            - staticfiles:/home/app/web/staticfiles
+        depends_on:
+            - web
+
+volumes:
+    postgres_docker_data:
+    staticfiles:
