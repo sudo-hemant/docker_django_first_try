@@ -18,10 +18,12 @@ Make any changes if you want and then open the terminal and go inside the root d
 # Helpful docker commands
 To stop the container, run -- docker-compose down 
 
+
 To restart the container, run -- docker-compose up -d
 
 
 To go inside the container, run -- docker exec -it <container_name>(you can find the container name in compose file) bash
+
 example command : docker exec -it django bash
 
 
