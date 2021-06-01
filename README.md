@@ -5,8 +5,8 @@ My first hands on docker.
 1. clone this repo
 2. open the terminal
 3. run the following commands to stop the local running services of nginx, postgresql, if any
-   2. sudo systemctl stop postgresql.service
-   3. sudo systemctl stop nginx.service
+   1. sudo systemctl stop postgresql.service
+   2. sudo systemctl stop nginx.service
 4. go inside the root directory
 5. run the command 
    1. docker-compose up --build -d
