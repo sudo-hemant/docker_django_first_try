@@ -1,33 +1,51 @@
 version: '3'
 services:
+    # postgres container
     postgresql:
+        # will pull the image from docker-hub when ran for the first time & will store in the local
+        # but from next ownwards it 'll pull from local
         image: postgres:13
+        # name of our container
         container_name: postgres
+        # if automatically stopped due to some reasons, it will try restarting it again
         restart: always
+        # environment variables
         environment:
             POSTGRES_DB: "${POSTGRES_DB}"
             POSTGRES_USER: "${POSTGRES_USER}"
             POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+        # the container will fetch all the required variables from the environment file
         env_file:
             - ./.env
+        # mounting volume means this directory's data will be in sync with container's same directory 
+        # here we are mounting the data directory of container with our local directory to persist data, 
+        # even after the container is stopped. If it's not mounted the data will be lost
         volumes:
             - ./postgres_docker_data:/var/lib/postgresql/data/
+        # connecting ports, the left one is the host port and the right one is container's port
         ports:
             - "5432:5432"
     web:
+        # will build the image from the docker file in the same directory
         build: .
+        # our container name
         container_name: django
+        # if automatically stopped due to some reasons, it will try restarting it again
         restart: always
+        # the command will be ran after the container is built
         # command: python3 manage.py runserver 0.0.0.0:8000
         command: gunicorn _main.wsgi:application --bind 0.0.0.0:8000 --workers=4
+        # mounting volumes 
         volumes:
             - .:/code
+            # TODO:     I think it's not needed bcos we are already mounting whole directory
             - staticfiles:/home/app/web/staticfiles
         # ports:
         #     - "8000:8000"
         # Instead of using ports in the web service, we use expose to expose the port 8000 of the container to other containers on the network.
         expose:
             - 8000
+        # this container will be built only after the postgres container is built
         depends_on:
             - postgresql
     nginx:
@@ -36,6 +54,7 @@ services:
         restart: always
         ports:
             - 1337:80
+        # mounting the nginx file and the static files (so that nginx can serve it itself)
         volumes:
             - ./nginx:/etc/nginx/conf.d
             - staticfiles:/home/app/web/staticfiles
