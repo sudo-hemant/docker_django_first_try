@@ -11,8 +11,8 @@ if [ "$DATABASE" = "postgres" ]; then
 fi
 
 echo "making migrations and migrating the database"
-python3 manage.py makemigrations --noinput
-python3 manage.py migrate --noinput
-python3 manage.py collectstatic --noinput
+python3 manage.py makemigrations --no-input
+python3 manage.py migrate --no-input
+python3 manage.py collectstatic --no-input
 
 exec "$@"
